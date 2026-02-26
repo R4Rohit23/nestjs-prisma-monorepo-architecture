@@ -1,0 +1,12 @@
+{
+    "name": "project-name-ai-layer",
+    "version": "1.0.0",
+    "description": "Lambda layer for OpenAI SDK - AI/ML operations",
+    "main": "index.js",
+    "scripts": {
+        "build": "npm install"
+    },
+    "dependencies": {
+        "openai": "^6.7.0"
+    }
+}

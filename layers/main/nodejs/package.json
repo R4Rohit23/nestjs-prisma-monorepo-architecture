@@ -1,0 +1,16 @@
+{
+    "name": "project-name-main-layer",
+    "version": "1.0.0",
+    "description": "Legacy main layer - kept for backward compatibility. Use purpose-specific layers instead.",
+    "main": "index.js",
+    "scripts": {
+        "build": "npm install"
+    },
+    "dependencies": {
+        "@vendia/serverless-express": "^4.12.6",
+        "express": "^5.1.0",
+        "zod": "^4.1.12",
+        "bson": "^7.0.0"
+    },
+    "devDependencies": {}
+}

@@ -1,0 +1,28 @@
+{
+  "name": "@project-name/infrastructure",
+  "version": "0.0.1",
+  "description": "CDK infrastructure",
+  "main": "lib/index.js",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc -w",
+    "test": "jest",
+    "cdk": "cdk",
+    "synth": "cdk synth",
+    "deploy": "cdk deploy --all",
+    "deploy:dev": "cdk deploy --all --context environment=dev --require-approval never",
+    "deploy:prod": "cdk deploy --all --context environment=prod --require-approval never",
+    "diff": "cdk diff",
+    "destroy": "cdk destroy --all"
+  },
+  "dependencies": {
+    "aws-cdk-lib": "^2.150.0",
+    "constructs": "^10.3.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.7",
+    "aws-cdk": "^2.150.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.3"
+  }
+}

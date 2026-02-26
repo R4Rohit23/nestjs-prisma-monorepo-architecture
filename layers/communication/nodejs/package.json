@@ -1,0 +1,13 @@
+{
+    "name": "project-name-communication-layer",
+    "version": "1.0.0",
+    "description": "Lambda layer for communication packages",
+    "main": "index.js",
+    "scripts": {
+        "build": "npm install"
+    },
+    "dependencies": {
+        "nodemailer": "^7.0.6"
+    }
+}
+

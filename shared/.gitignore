@@ -1,0 +1,10 @@
+dist
+node_modules
+*.log
+.DS_Store
+
+# Build artifacts (tsc should output to dist only)
+**/src/**/*.js
+**/src/**/*.d.ts
+**/src/**/*.js.map
+**/src/**/*.d.ts.map

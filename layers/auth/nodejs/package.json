@@ -1,0 +1,16 @@
+{
+    "name": "project-name-auth-layer",
+    "version": "1.0.0",
+    "description": "Lambda layer for authentication packages - Google OAuth, Passport",
+    "main": "index.js",
+    "scripts": {
+        "build": "npm install"
+    },
+    "dependencies": {
+        "google-auth-library": "^10.4.2",
+        "passport": "^0.7.0",
+        "passport-google-oauth20": "^2.0.0",
+        "nodemailer": "^7.0.6"
+    }
+}
+

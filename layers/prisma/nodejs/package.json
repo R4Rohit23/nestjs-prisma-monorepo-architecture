@@ -1,0 +1,17 @@
+{
+    "name": "project-name-prisma-layer",
+    "version": "1.0.0",
+    "description": "Lambda layer for Prisma dependencies with PostgreSQL",
+    "main": "index.js",
+    "scripts": {
+        "generate:prisma": "npx prisma generate --schema ./prisma/schema",
+        "push:prisma": "npx prisma db push --schema ./prisma/schema/schema.prisma",
+        "build": "npm install && npm run generate:prisma && npm prune --production"
+    },
+    "dependencies": {
+        "@prisma/client": "7.2.0"
+    },
+    "devDependencies": {
+        "prisma": "7.2.0"
+    }
+}

@@ -1,0 +1,119 @@
+name: CI and Deploy to Dev
+
+on:
+  push:
+    branches:
+      - dev
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy to'
+        required: true
+        default: 'dev'
+        type: choice
+        options:
+          - dev
+          - prod
+
+env:
+  AWS_REGION: ap-south-1
+  NODE_VERSION: '20'
+
+jobs:
+  deploy-dev:
+    name: Deploy to Dev
+    runs-on: ubuntu-latest
+    environment:
+      name: dev
+      url: ${{ steps.deploy.outputs.api-url }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Load environment variables from .env
+        run: |
+          cat .env | grep -v '^#' >> $GITHUB_ENV
+        shell: bash
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 8
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Clear CDK cache to force fresh build
+        run: |
+            echo "Clearing CDK cache to force Lambda rebuild..."
+            rm -rf infrastructure/cdk.out
+            rm -rf infrastructure/.cdk.staging
+            echo "CDK cache cleared"
+
+      - name: Clean install dependencies
+        run: |
+          # Hard reset to fix any corrupted node_modules
+          rm -rf node_modules
+          rm -rf layers/prisma/nodejs/node_modules
+          rm -rf .pnpm-store
+          # Clean install with pnpm
+          pnpm install --force --no-frozen-lockfile
+
+      - name: Build Lambda layers
+        run: pnpm build:layers
+
+      - name: Generate Prisma client
+        run: |
+          # Clear any cached Prisma files that might cause issues
+          rm -rf node_modules/.prisma node_modules/.cache/prisma 2>/dev/null || true
+          # Generate Prisma from the layer directory where Prisma is properly installed
+          cd layers/prisma/nodejs
+          # Install dependencies (devDependencies are installed by default unless NODE_ENV=production)
+          # This installs Prisma CLI and all its dependencies including confbox
+          npm install
+          # Generate Prisma client - this will fail with a clear error if confbox is missing
+          npm run generate:prisma
+          cd ../../..
+
+      - name: Build all packages
+        run: pnpm build
+
+      # - name: Show Lambda and layer sizes
+      #   run: |
+      #     echo "=== Layer sizes (unzipped, count toward Lambda 250MB limit) ==="
+      #     for dir in layers/*/nodejs; do
+      #       [ -d "$dir" ] && echo "$(du -sh "$dir" | cut -f1)  $dir"
+      #     done
+      #     echo ""
+      #     echo "=== Synthesizing stack to measure asset sizes ==="
+      #     cd infrastructure && pnpm exec cdk synth --context environment=dev --quiet --output cdk.out 2>/dev/null || true
+      #     cd ..
+      #     echo ""
+      #     echo "=== CDK asset sizes (Lambda bundle + layer zips, unzipped counts toward limit) ==="
+      #     if [ -d infrastructure/cdk.out ]; then
+      #       for asset in infrastructure/cdk.out/asset.*; do
+      #         [ -d "$asset" ] && echo "$(du -sh "$asset" | cut -f1)  $(basename "$asset")"
+      #       done
+      #       echo ""
+      #       total=$(du -sh infrastructure/cdk.out 2>/dev/null | cut -f1)
+      #       echo "Total cdk.out: $total"
+      #     fi
+      #     echo ""
+      #     echo "Lambda limit: 250 MB unzipped (function + all layers combined)"
+
+      - name: Deploy CDK stack
+        id: deploy
+        run: cd infrastructure && pnpm exec cdk deploy --all --context environment=dev --require-approval never
+        env: 
+          DATABASE_URL: ${{ env.DATABASE_URL }}

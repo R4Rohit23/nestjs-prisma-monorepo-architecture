@@ -1,0 +1,27 @@
+{
+  "name": "@project-name/shared-services",
+  "version": "0.0.1",
+  "description": "Shared services for <project-name> backend",
+  "main": "dist/src/index.js",
+  "types": "dist/src/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc -w",
+    "test": "jest",
+    "generate:prisma": "npx prisma generate --schema ../../../../layers/prisma/nodejs/prisma"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "@nestjs/common": "^11.0.1",
+    "@nestjs/config": "^3.2.3",
+    "@prisma/adapter-pg": "7.2.0",
+    "@prisma/client": "7.2.0",
+    "pg": "^8.13.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.7",
+    "@types/pg": "^8.11.0",
+    "prisma": "7.2.0",
+    "typescript": "^5.7.3"
+  }
+}

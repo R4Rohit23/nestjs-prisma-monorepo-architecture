@@ -1,0 +1,15 @@
+{
+    "name": "project-name-aws-layer",
+    "version": "1.0.0",
+    "description": "Lambda layer for AWS SDK packages",
+    "main": "index.js",
+    "scripts": {
+        "build": "npm install"
+    },
+    "dependencies": {
+        "@aws-sdk/client-s3": "^3.891.0",
+        "@aws-sdk/s3-request-presigner": "^3.891.0",
+        "@aws-sdk/client-sqs": "^3.478.0",
+        "@aws-sdk/client-textract": "^3.891.0"
+    }
+}

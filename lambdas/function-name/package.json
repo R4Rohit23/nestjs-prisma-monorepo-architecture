@@ -1,0 +1,24 @@
+{
+  "name": "@project-name/function-name",
+  "description": "<function-name> Lambda function",
+  "private": true,
+  "dependencies": {
+    "@project-name/shared-constants": "workspace:*",
+    "@project-name/shared-services": "workspace:*",
+    "@project-name/shared-types": "workspace:*",
+    "@project-name/shared-utils": "workspace:*"
+  },
+  "scripts": {
+    "dev": "nest start --watch",
+    "lint": "eslint src/**/*.ts",
+    "test": "jest",
+    "build": "tsc -b && nest build"
+  },
+  "devDependencies": {
+    "@aws-sdk/client-s3": "^3.891.0",
+    "@aws-sdk/s3-request-presigner": "^3.891.0",
+    "@types/aws-lambda": "^8.10.145",
+    "@types/node": "^22.10.7",
+    "typescript": "^5.7.3"
+  }
+}
